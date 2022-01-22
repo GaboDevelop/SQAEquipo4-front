@@ -18,8 +18,7 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex';
-const { mapState, mapActions } = createNamespacedHelpers('layout');
+import { mapState, mapActions } from 'vuex';
 
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Header from '@/components/Header/Header';
@@ -30,8 +29,7 @@ export default {
   name: 'Layout',
   components: { Sidebar, Header },
   methods: {
-    ...mapActions(['switchSidebar', 'handleSwipe', 'changeSidebarActive', 'toggleSidebar'],
-    ),
+    ...mapActions('layout', ['switchSidebar', 'handleSwipe', 'changeSidebarActive', 'toggleSidebar']),
     handleWindowResize() {
       const width = window.innerWidth;
 
@@ -42,7 +40,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["sidebarClose", "sidebarStatic"]),
+    ...mapState('layout', ["sidebarClose", "sidebarStatic"]),
   },
   created() {
     const staticSidebar = JSON.parse(localStorage.getItem('sidebarStatic'));

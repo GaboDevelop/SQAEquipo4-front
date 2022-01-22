@@ -5,87 +5,92 @@
 
   <b-modal v-model="modalShow" title="Nuevo Pedido">
     <form ref="form" @submit.stop.prevent="onSubmitOrder">
-        <b-form-group
-          label="Tamano de sandwich"
-          label-for="sandwich-size-input"
-          invalid-feedback="El tipo de sandwich es requerido"
-        >
-          <multiselect 
-            v-model="size" 
-            :options="sizesSandwich" 
-            :multiple="false" 
-            :close-on-select="true" 
-            :clear-on-select="false" 
-            :preserve-search="true" 
-            placeholder="Selecciona tamano del sandwich" 
-            label="tamaño"
-            track-by="tamaño" 
-            :preselect-first="false"
+        <template v-for="(sandwich,i) in sandwichs">
+          <div :key="'sandwich'+i">
+            <b-form-group
+              label="Tamano de sandwich"
+              label-for="sandwich-size-input"
+              invalid-feedback="El tipo de sandwich es requerido"
             >
-              <template 
-                slot="singleLabel" 
-                slot-scope="props"
-              >
-                <span class="option__desc">
-                  <span class="option__title">
-                    Nombre: {{ props.option.tamaño }} / Precio: {{ props.option.precio }}$
-                  </span>
-                </span>
-              </template>
-              <template 
-                slot="option" 
-                slot-scope="props"
-              >
-                <div class="option__desc">
-                  <span class="option__title">
-                    Nombre: {{ props.option.tamaño }} 
-                  </span>
-                  <span class="option__small">
-                    precio: {{ props.option.precio }}$
-                  </span>
-                </div>
-              </template>
-          </multiselect>
-        </b-form-group>
+              <multiselect 
+                v-model="sandwich.size" 
+                :options="sizesSandwich" 
+                :multiple="false" 
+                :close-on-select="true" 
+                :clear-on-select="false" 
+                :preserve-search="true" 
+                placeholder="Selecciona tamano del sandwich" 
+                label="name"
+                track-by="name" 
+                :preselect-first="false"
+                >
+                  <template 
+                    slot="singleLabel" 
+                    slot-scope="props"
+                  >
+                    <span class="option__desc">
+                      <span class="option__title">
+                        {{ props.option.name }} / Precio: {{ props.option.price }}$
+                      </span>
+                    </span>
+                  </template>
+                  <template 
+                    slot="option" 
+                    slot-scope="props"
+                  >
+                    <div class="option__desc">
+                      <span class="option__title">
+                        {{ props.option.name }} 
+                      </span>
+                      <span class="option__small">
+                        precio: {{ props.option.price }}$
+                      </span>
+                    </div>
+                  </template>
+              </multiselect>
+            </b-form-group>
 
-        <b-form-group label="Ingredientes" label-for="ingredients-input">
-          <multiselect 
-            v-model="ingredient" 
-            :options="list_ingredients" 
-            :multiple="false" 
-            :close-on-select="true" 
-            :clear-on-select="false" 
-            :preserve-search="true" 
-            placeholder="Selecciona los ingredientes" 
-            label="nombre"
-            track-by="nombre" 
-            :preselect-first="false"
-            >
-              <template 
-                slot="singleLabel" 
-                slot-scope="props"
-              >
-                <span class="option__desc">
-                  <span class="option__title">
-                    Nombre: {{ props.option.tamaño }} / Precio: {{ props.option.precio }}$
-                  </span>
-                </span>
-              </template>
-              <template 
-                slot="option" 
-                slot-scope="props"
-              >
-                <div class="option__desc">
-                  <span class="option__title">
-                    Nombre: {{ props.option.tamaño }} 
-                  </span>
-                  <span class="option__small">
-                    precio: {{ props.option.precio }}$
-                  </span>
-                </div>
-              </template>
-          </multiselect>
-        </b-form-group>
+            <b-form-group label="Ingredientes" label-for="ingredients-input">
+              <multiselect 
+                v-model="sandwich.ingredients" 
+                :options="list_ingredients" 
+                :multiple="true" 
+                :close-on-select="true" 
+                :clear-on-select="false" 
+                :preserve-search="true" 
+                placeholder="Selecciona los ingredientes" 
+                label="name"
+                track-by="name" 
+                :preselect-first="false"
+                >
+                  <template 
+                    slot="singleLabel" 
+                    slot-scope="props"
+                  >
+                    <span class="option__desc">
+                      <span class="option__title">
+                        {{ props.option.name }} / Precio: {{ props.option.price }}$
+                      </span>
+                    </span>
+                  </template>
+                  <template 
+                    slot="option" 
+                    slot-scope="props"
+                  >
+                    <div class="option__desc">
+                      <span class="option__title">
+                        Nombre: {{ props.option.name }} 
+                      </span>
+                      <span class="option__small">
+                        precio: {{ props.option.price }}$
+                      </span>
+                    </div>
+                  </template>
+              </multiselect>
+            </b-form-group>
+          </div>
+        </template>
+        
       </form>
       <div class="row justify-content-center" v-if="size && ingredient">
         <div class="col-12">
@@ -95,16 +100,16 @@
           <p>Cantidad de sandwich: {{ quantity }}</p>
         </div>
         <div class="col-12">
-          <p>Tamano: {{ size.tamaño }}</p>
+          <p>Tamano: {{ size.name }}</p>
         </div>
         <div class="col-12">
-          <p>Precio sandwich: {{ size.precio }}$</p>
+          <p>Precio sandwich: {{ size.price }}$</p>
         </div>
         <div class="col-12">
-          <p>Precio ingrediente: {{ ingredient.precio }}$</p>
+          <p>Precio ingrediente: {{ ingredient.price }}$</p>
         </div>
         <p>
-          <b>Total: {{ size.precio + ingredient.precio }}$</b>
+          <b>Total: {{ size.price + ingredient.price }}$</b>
         </p>
       </div>
       <template #modal-footer>
@@ -122,7 +127,6 @@
             size="sm"
             class="float-right"
             @click="onSubmitOrder"
-            :disabled="!size || !ingredient"
           >
             Crear
           </b-button>
@@ -138,8 +142,7 @@
              <thead>
                <tr>
                  <th>Orden #</th>
-                 <th>Tamano</th>
-                 <th>Ingredientes</th>
+                 <th>Cantidad de sandwich</th>
                  <th>Precio</th>
                  <!--<th>Estado</th>-->
                  <!--<th>Acciones</th>-->
@@ -148,9 +151,8 @@
              <tbody>
                <tr v-for="(order,i) in orders" :key="i+'sasas'">
                  <td>{{order.id_pedido}}</td>
-                 <td>{{order.tamaño}}</td>
-                 <td>{{order.ingrediente}}</td>
-                 <td>{{order.precio}}$</td>
+                 <td>{{order.cantidad_sandwiches}}</td>
+                 <td>{{order.precio_total}}$</td>
                  <!--<td><b-badge variant="primary" pill>{{order.status}}</b-badge></td>-->
                   <!--<td>
                     <b-button class="mr-2" variant="primary" @click="openEditModal(order)">Editar</b-button>
@@ -178,26 +180,28 @@ export default {
     return {
       modalShow:false,
       modalShowDelete: false,
+      sandwichs : [
+        {
+          size: null,
+          ingredients: []
+        }
+      ],
       size: null,
       ingredient: null,
       quantity: 1,
       date: new Date(),
       orders: [
-        {
-          id_pedido: 1,
-          tamaño: 'Mediano',
-          ingrediente: 'Pan',
-          precio: 20
-        }
       ],
       list_ingredients: [],
       sizesSandwich: [],
     };
   },
   mounted(){
-    HTTP.get(`ingrediente/ingredientes`)
+    HTTP.get(`ingredients`)
     .then(response => {
-      this.list_ingredients = response.data
+      if(response.data && response.data.success){
+        this.list_ingredients = response.data.data
+      }
     })
     .catch(e => {
   
@@ -205,9 +209,13 @@ export default {
       console.error(e)
     })
 
-    HTTP.get(`sandwich/sandwiches`)
+    HTTP.get(`sandwichs`)
     .then(response => {
-      this.sizesSandwich = response.data
+      console.log("response", response)
+      if(response.data && response.data.success){
+        console.log("hola", response.data.data)
+        this.sizesSandwich = response.data.data
+      }
     })
     .catch(() => {
       //this.errors.push(e)

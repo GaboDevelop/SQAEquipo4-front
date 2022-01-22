@@ -16,7 +16,7 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="row in mock.table"
+                  v-for="row in masPedidos"
                   :key="row.id"
                 >
                   <td>{{row.product}}</td>
@@ -43,7 +43,7 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="row in mock.table"
+                  v-for="row in masPedidos"
                   :key="row.id"
                 >
                   <td>{{row.product}}</td>
@@ -62,6 +62,7 @@
 import Widget from '@/components/Widget/Widget';
 import BigStat from './components/BigStat/BigStat';
 import mock from './mock';
+import { HTTP } from '../../http-common';
 
 import { Chart } from 'highcharts-vue';
 
@@ -72,96 +73,65 @@ export default {
   },
   data() {
     return {
-      mock
+      masPedidos:[
+        {
+          id:13232,
+          product:'Sandwich de pollo',
+          price:12.5,
+        },
+        {
+          id: 13233,
+          product: 'Sandwich de carne',
+          price: 15.5,
+        },
+        {
+          id: 13234,
+          product: 'Sandwich de tomate',
+          price: 10.5,
+        },
+        {
+          id: 13235,
+          product: 'Sandwich de queso',
+          price: 8.5,
+        },
+        {
+          id: 13236,
+          product: 'Sandwich de jamón',
+          price: 12.5,
+        },
+        {
+          id: 13237,
+          product: 'Sandwich de salchicha',
+          price: 12.5,
+        },
+        {
+          id: 13238,
+          product: 'Sandwich de tocino',
+          price: 12.5,
+        },
+        {
+          id: 13239,
+          product: 'Sandwich de salami',
+          price: 12.5,
+        },
+        {
+          id: 13240,
+          product: 'Sandwich de salchicha',
+          price: 12.5,
+        },
+        {
+          id: 13241,
+          product: 'Sandwich de salchicha',
+          price: 12.5,
+        }
+      ]
     };
   },
-  methods: {
-    getRandomData() {
-      const arr = [];
-
-      for (let i = 0; i < 25; i += 1) {
-        arr.push(Math.random().toFixed(1) * 10);
-      }
-
-      return arr;
-    },
-    getRevenueData() {
-      const data = [];
-      const seriesCount = 3;
-      const accessories = ['SMX', 'Direct', 'Networks'];
-
-      for (let i = 0; i < seriesCount; i += 1) {
-        data.push({
-          label: accessories[i],
-          data: Math.floor(Math.random() * 100) + 1,
-        });
-      }
-
-      return data;
-    }
+  mounted() {
+    HTTP.get('sandwich/maspedido').then(response => {
+      console.log("response",response)
+    });
   },
-  computed: {
-    donut() {
-      let revenueData = this.getRevenueData();
-      let {danger, info, primary} = this.appConfig.colors;
-      let series = [
-        {
-          name: 'Revenue',
-          data: revenueData.map(s => {
-            return {
-              name: s.label,
-              y: s.data
-            }
-          })
-        }
-      ];
-      return {
-        chart: {
-          type: 'pie',
-          height: 120
-        },
-        credits: {
-          enabled: false
-        },
-        title: false,
-        plotOptions: {
-          pie: {
-            dataLabels: {
-              enabled: false
-            },
-            borderColor: null,
-            showInLegend: true,
-            innerSize: 60,
-            size: 100,
-            states: {
-              hover: {
-                halo: {
-                  size: 1
-                }
-              }
-            }
-          }
-        },
-        colors: [danger, info, primary],
-        legend: {
-          align: 'right',
-          verticalAlign: 'middle',
-          layout: 'vertical',
-          itemStyle: {
-            color: '#495057',
-            fontWeight: 100,
-            fontFamily: 'Montserrat'
-          },
-          itemMarginBottom: 5,
-          symbolRadius: 0
-        },
-        exporting: {
-          enabled: false
-        },
-        series
-      };
-    }
-  }
 };
 </script>
 

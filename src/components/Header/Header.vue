@@ -37,7 +37,7 @@
           <span class="avatar rounded-circle thumb-sm float-left mr-2">
             <img class="rounded-circle" src="../../assets/people/a7.png" alt="..." />
           </span>
-          <span class="px-2">Admin</span>
+          <span class="px-2">{{user?user.name:''}}</span>
           <i class='fi flaticon-settings-10 px-2' />
         </template>
         <!--<b-dropdown-divider />
@@ -63,6 +63,7 @@ export default {
   components: { Notifications },
   computed: {
     ...mapState('layout', ['sidebarClose', 'sidebarStatic']),
+    ...mapState('user', ['user']),
   },
   methods: {
     ...mapActions('layout', ['toggleSidebar', 'switchSidebar', 'changeSidebarActive']),

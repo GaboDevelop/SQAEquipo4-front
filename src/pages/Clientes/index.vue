@@ -49,7 +49,15 @@ export default {
       users: [
         {
           id: 1,
-          nombre: 'Mediano'
+          nombre: 'Jose Mainero',
+        },
+        {
+          id:2,
+          nombre: 'Juan Perez',
+        },
+        {
+          id:3,
+          nombre: 'Maria Lopez',
         }
       ],
       list_ingredients: [],
@@ -79,7 +87,7 @@ export default {
   },
   methods: {
     getPedidos(){
-      HTTP.get(`pedido/pedidos`)
+      HTTP.get(`usuariosNuevos`)
       .then(response => {
         this.orders = response.data
       })
