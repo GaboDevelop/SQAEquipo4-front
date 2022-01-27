@@ -1,9 +1,9 @@
 <template>
   <div class="tables-basic">
-    <h2 class="page-title">Clientes</h2>
-    <b-button variant="primary" @click="modalShow = !modalShow">Crear Clientes</b-button>
+    <h2 class="page-title">Cajero</h2>
+    <b-button variant="primary" @click="modalShow = !modalShow">Crear cajeros</b-button>
 
-  <b-modal v-model="modalShow" title="Registrar Cliente">
+  <b-modal v-model="modalShow" title="Registrar Cajero">
       <form class="mt" @submit.prevent="register">
           <div class="form-group">
             <input v-model="name" class="form-control no-border" ref="first_name" required type="text" name="first_name" placeholder="Nombre" />
@@ -32,7 +32,7 @@
           :disabled="!name || !email || !password"
           @click="register"
         >
-          Registrar Cliente
+          Registrar cajero
         </b-button>
       </div>
     </template>
@@ -40,7 +40,7 @@
 
     <b-row>
       <b-col>
-         <p>Listado Clientes.</p>
+         <p>Listado Cajeros.</p>
          <div class="table-responsive">
            <table class="table table-hover">
              <thead>
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     getUsers(){
-      HTTP.get(`users?rol=client`)
+      HTTP.get(`users?rol=cashier`)
       .then((res)=>{
         if(res.data && res.data.success){
           this.users = res.data.data;
@@ -114,8 +114,8 @@ export default {
     },
     register() {
       const {name,email,password} = this;
-      const rol = this.rols.find(rol => rol.name == 'client');
-      const rol_cashier_id = rol ? rol.id : 3;
+      const rol = this.rols.find(rol => rol.name == 'cashier');
+      const rol_cashier_id = rol ? rol.id : 2;
       const data = {
         name,email,password, rol_id: rol_cashier_id
       }
@@ -162,7 +162,7 @@ export default {
       HTTP.delete(`users/${user.id}`)
       .then((res) => {
         if(res.data && res.data.success){
-          this.$toasted.success('Cliente bloqueado!', {
+          this.$toasted.success('Cajero bloqueado!', {
             action: {
               text: 'Cerrar',
               onClick: (e, toastObject) => {

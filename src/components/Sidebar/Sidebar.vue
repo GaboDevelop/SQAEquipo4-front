@@ -26,7 +26,9 @@
             index="Pedidos"
             isHeader
         />
+
         <NavLink
+            v-if="user && user.rol_name == 'admin'" 
             :activeItem="activeItem"
             header="Clientes"
             link="/app/clientes"
@@ -34,10 +36,11 @@
             isHeader
         />
         <NavLink
+            v-if="user && user.rol_name == 'admin'" 
             :activeItem="activeItem"
-            header="Personal"
-            link="/app/personal"
-            index="Personal"
+            header="Cajero"
+            link="/app/cajero"
+            index="Cajero"
             isHeader
         />
         <!--<NavLink
@@ -114,6 +117,7 @@ export default {
       sidebarOpened: state => !state.sidebarClose,
       activeItem: state => state.sidebarActiveElement,
     }),
+    ...mapState('user', ['user']),
   },
 };
 </script>

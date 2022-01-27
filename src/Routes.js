@@ -22,7 +22,7 @@ import ChartsPage from '@/pages/Charts/Charts';
 
 // Ui
 import IconsPage from '@/pages/Icons/Icons';
-import PersonalPage from '@/pages/Personal';
+import CajeroPage from '@/pages/Cajero';
 
 
 Vue.use(Router);
@@ -65,9 +65,9 @@ export default new Router({
           component: IconsPage,
         },
         {
-          path: 'personal',
-          name: 'PersonalPage',
-          component: PersonalPage,
+          path: 'cajero',
+          name: 'CajeroPage',
+          component: CajeroPage,
         },
         {
           path: 'components/charts',

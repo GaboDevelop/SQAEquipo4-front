@@ -35,7 +35,8 @@
       <b-nav-item-dropdown id="v-step-2" class="settingsDropdown d-sm-down-none" no-caret right>
         <template slot="button-content">
           <span class="avatar rounded-circle thumb-sm float-left mr-2">
-            <img class="rounded-circle" src="../../assets/people/a7.png" alt="..." />
+            
+              <i class='fi flaticon-user' />
           </span>
           <span class="px-2">{{user?user.name:''}}</span>
           <i class='fi flaticon-settings-10 px-2' />
@@ -57,6 +58,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import Notifications from '@/components/Notifications/Notifications';
+import { HTTP } from '../../http-common';
 
 export default {
   name: 'Header',
@@ -65,8 +67,17 @@ export default {
     ...mapState('layout', ['sidebarClose', 'sidebarStatic']),
     ...mapState('user', ['user']),
   },
+  mounted() {
+    const user_id = window.localStorage.getItem('user_id');
+    HTTP.get(`users/${user_id}`).then(response => {
+      if(response.data && response.data.success) {
+        this.setUser(response.data.data);
+      }
+    });
+  },
   methods: {
     ...mapActions('layout', ['toggleSidebar', 'switchSidebar', 'changeSidebarActive']),
+    ...mapActions('user', ['setUser']),
     switchSidebarMethod() {
       if (!this.sidebarClose) {
         this.switchSidebar(true);
@@ -91,6 +102,7 @@ export default {
     },
     logout() {
       window.localStorage.setItem('authenticated', false);
+      window.localStorage.setItem('user',null)
       this.$router.push('/login');
     },
   }

@@ -11,7 +11,10 @@ export default {
   },
   actions: {
     setUser({commit}, user){
-        commit('SET_USER', user);
+      if(user){
+        window.localStorage.setItem('user_id', user.id);
+      }
+      commit('SET_USER', user);
     }
   },
 };

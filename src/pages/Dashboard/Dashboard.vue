@@ -76,22 +76,22 @@ export default {
       masPedidos:[
         {
           id:13232,
-          product:'Sandwich de pollo',
+          product:'Tomate',
           price:12.5,
         },
         {
           id: 13233,
-          product: 'Sandwich de carne',
+          product: 'Tocineta',
           price: 15.5,
         },
         {
           id: 13234,
-          product: 'Sandwich de tomate',
+          product: 'Salsa picante',
           price: 10.5,
         },
         {
           id: 13235,
-          product: 'Sandwich de queso',
+          product: 'Cebolla caramelizada',
           price: 8.5,
         },
         {
