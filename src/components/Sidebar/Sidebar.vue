@@ -43,6 +43,22 @@
             index="Cajero"
             isHeader
         />
+        <NavLink
+            v-if="user && user.rol_name == 'admin'" 
+            :activeItem="activeItem"
+            header="Accesos"
+            link="/app/accesos"
+            index="Accesos"
+            isHeader
+        />
+        <NavLink
+            v-if="user && user.rol_name == 'admin'" 
+            :activeItem="activeItem"
+            header="Ofertas"
+            link="/app/ofertas"
+            index="Ofertas"
+            isHeader
+        />
         <!--<NavLink
             :activeItem="activeItem"
             header="Components"

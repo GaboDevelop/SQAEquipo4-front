@@ -1,8 +1,5 @@
 <template>
   <div class="tables-basic">
-    <h2 class="page-title">Pedidos</h2>
-    <b-button variant="primary" @click="modalShow = !modalShow">Crear pedido</b-button>
-
     <b-modal v-model="modalShow" title="Nuevo Pedido">
       <form ref="form" @submit.stop.prevent="onSubmitOrder">
           <div class="col-12 px-0">
@@ -140,6 +137,52 @@
             Agregar sandwich
           </b-button>
         </form>
+        <div class="row col-12 px-0 m-0" v-if="user && user.rol_name != 'client'">
+          <div class="col-12 px-0">
+            <b-form-group
+            label="Descuento del pedido"
+            label-for="sandwich-size-input"
+            invalid-feedback="El tipo de sandwich es requerido"
+          >
+            <multiselect 
+              v-model="offer" 
+              :options="offers" 
+              :multiple="false" 
+              :close-on-select="true" 
+              :clear-on-select="false" 
+              :preserve-search="true" 
+              :placeholder="`Descuentos`" 
+              label="name"
+              track-by="name" 
+              :preselect-first="false"
+              >
+                <template 
+                  slot="singleLabel" 
+                  slot-scope="props"
+                >
+                  <span class="option__desc">
+                    <span class="option__title">
+                      {{ props.option.name }} / decuento: {{ props.option.discount }}%
+                    </span>
+                  </span>
+                </template>
+                <template 
+                  slot="option" 
+                  slot-scope="props"
+                >
+                  <div class="option__desc">
+                    <span class="option__title">
+                      {{ props.option.name }} 
+                    </span>
+                    <span class="option__small">
+                      precio: {{ props.option.discount }}%
+                    </span>
+                  </div>
+                </template>
+            </multiselect>
+          </b-form-group>
+          </div>
+        </div>
         <div class="row col-12 justify-content-center">
           <div class="col-12">
             <h5>Resumen de pedido</h5>
@@ -153,8 +196,14 @@
           <div class="col-12">
             <p>Precio en ingredientes: {{ getPricesIngredients }}$</p>
           </div>
+          <div class="col-12" v-if="offer">
+            <p>Descuento: {{ offer.discount }}%</p>
+          </div>
+          <div class="col-12">
+            <p>Subtotal: {{ getPricesSandwichs + getPricesIngredients }}$</p>
+          </div>
           <p>
-            <b>Total: {{ getPricesSandwichs + getPricesIngredients }}$</b>
+            <b>Total: {{ getDiscount(getPricesSandwichs + getPricesIngredients) }}$</b>
           </p>
         </div>
         <div class="col-12 px-0 mb-4">
@@ -308,8 +357,20 @@
                <tr>
                   <td></td>
                   <td></td>
-                  <td><b>Total:</b></td>
+                  <td><b>Subtotal:</b></td>
                   <td>{{orderSelected.price}}$</td>
+               </tr>
+               <tr v-if="orderSelected.offer">
+                  <td></td>
+                  <td></td>
+                  <td><b>Descuento:</b></td>
+                  <td>{{orderSelected.offer.discount}}% (- {{orderSelected.price *(orderSelected.offer.discount/100)  }}$)</td>
+               </tr>
+               <tr>
+                  <td></td>
+                  <td></td>
+                  <td><b>Total:</b></td>
+                  <td>{{orderSelected.total_price}}$</td>
                </tr>
              </tbody>
            </table>
@@ -327,8 +388,58 @@
           </b-button>
         </div>
       </template>
-      </b-modal>
+    </b-modal>
 
+
+    <h2 class="page-title">Pedidos</h2>
+    <b-button variant="primary" @click="modalShow = !modalShow">Crear pedido</b-button>
+    <b-row class="mt-4 align-items-center">
+      <b-col>
+        <b-form-group
+          label="Fecha inicio"
+          label-for="sandwich-size-input"
+        >
+          <b-form-input
+            id="sandwich-size-input"
+            v-model="init_date"
+            type="date"/>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group
+          label="Fecha fin"
+          label-for="sandwich-size-input"
+        >
+          <b-form-input
+            id="sandwich-size-input"
+            v-model="end_date"
+            type="date"
+            placeholder="xx-xx-xxxx"/>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group
+          label="Por Rol"
+          label-for="sandwich-size-input"
+        >
+
+          <b-form-select v-model="rol">
+            <option value="">Todos</option>
+            <option value="cashier">Cajero</option>
+            <option value="client">Cliente</option>
+          </b-form-select>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-button
+          variant="primary"
+          @click="onSearchOrders"
+        >
+          Buscar
+        </b-button>
+      </b-col>
+    </b-row>
+    
     <b-row>
       <b-col>
          <p>Listado historico de pedidos.</p>
@@ -351,7 +462,7 @@
                  <th>{{order.date}}</th>
                  <th>{{order.estimate_time}}</th>
                  <td>{{order.sandwichs.length}}</td>
-                 <td>{{order.price}}$</td>
+                 <td>{{order.total_price}}$</td>
                  <!--<td><b-badge variant="primary" pill>{{order.status}}</b-badge></td>-->
                   <td>
                     
@@ -390,10 +501,13 @@ export default {
       modalShow:false,
       modalShowDelete: false,
       comment: '',
+      rol: '',
       client_name: '',
       card_number: '',
       card_expiration: '',
       card_security: '',
+      init_date: '',
+      end_date: '',
       estimate_time: 5,
       sandwichs : [
         {
@@ -408,6 +522,8 @@ export default {
       date: new Date(),
       orders: [
       ],
+      offers:[],
+      offer: null,
       list_ingredients: [],
       sizesSandwich: [],
     };
@@ -434,6 +550,7 @@ export default {
     }
   },
   mounted(){
+    
     HTTP.get(`ingredients`)
     .then(response => {
       if(response.data && response.data.success){
@@ -455,6 +572,13 @@ export default {
     .catch(() => {
       //this.errors.push(e)
     })
+
+     HTTP.get(`offers`)
+      .then((res)=>{
+        if(res.data && res.data.success){
+          this.offers = res.data.data;
+        }
+      })
 
     this.getPedidos()
   },
@@ -524,6 +648,7 @@ export default {
         "user_id": this.user.id,
         "comment": this.comment,
         "estimate_time": this.estimate_time,
+        "offer": this.offer,
         "data": body
       }
       HTTP.post(`orders`, data)
@@ -597,6 +722,27 @@ export default {
       for(var i = 0; i < sandwich.ingredients.length; i++){
         total += sandwich.ingredients[i].price;
       }
+      return total
+    },
+    onSearchOrders(){
+      let {init_date, end_date,rol} = this;
+  
+      HTTP.get(`orders?init_date=${init_date}&end_date=${end_date}&rol=${rol}&${this.user.rol_name === 'admin' ? '': 'id='+this.user.id}`)
+      .then(response => {
+        if(response.data && response.data.success){
+          this.orders = response.data.data
+        }
+      })
+      .catch(e => {
+        // eslint-disable-next-line no-console
+        console.error(e)
+      })
+      
+    },
+    getDiscount(total){
+      if(this.offer){
+        return total - (total * (this.offer.discount / 100))
+      } 
       return total
     }
   },

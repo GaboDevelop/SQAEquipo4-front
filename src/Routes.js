@@ -12,7 +12,7 @@ import PedidosPage from '@/pages/Pedidos';
 import Clientes from '@/pages/Clientes';
 
 // Maps
-import GoogleMapPage from '@/pages/Maps/Google';
+import OfertasPage from '@/pages/Ofertas';
 
 // Main
 import AnalyticsPage from '@/pages/Dashboard/Dashboard';
@@ -23,6 +23,7 @@ import ChartsPage from '@/pages/Charts/Charts';
 // Ui
 import IconsPage from '@/pages/Icons/Icons';
 import CajeroPage from '@/pages/Cajero';
+import AccesosPage from '@/pages/Accesos';
 
 
 Vue.use(Router);
@@ -80,9 +81,14 @@ export default new Router({
           component: Clientes,
         },
         {
-          path: 'components/maps',
-          name: 'GoogleMapPage',
-          component: GoogleMapPage,
+          path: 'accesos',
+          name: 'AccesosPage',
+          component: AccesosPage,
+        },
+        {
+          path: 'ofertas',
+          name: 'OfertasPage',
+          component: OfertasPage,
         },
       ],
     },
